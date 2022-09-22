@@ -6,7 +6,7 @@ May be compatible with Elasticsearch, depending on opensearch-py.
 
 # Installation
 ``` bash
-pip install opensearchorm
+pip install opensearch-orm
 ```
 
 
