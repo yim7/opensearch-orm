@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "opensearchorm"}]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.7"
 opensearch-py = "^2.0.0"
 pytz = "^2022.2.1"
 pydantic = "^1.10.2"
