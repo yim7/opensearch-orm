@@ -90,3 +90,15 @@ with SearchSession() as session:
     )
     print(result)
 ```
+
+## aggregations
+group by path and count unique remote_ip
+``` python
+with SearchSession() as session:
+    result = (
+        session.select(UserLog)
+        .aggregate(Terms('path').nested(Cardinality('remote_ip')))
+    )
+    print(result)
+    # result -> {'path': 1, 'path2': 2}
+```
