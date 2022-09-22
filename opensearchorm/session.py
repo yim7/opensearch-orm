@@ -6,7 +6,7 @@ from opensearchpy import OpenSearch
 
 from opensearchorm.model import BaseModel
 from opensearchorm.query import ModelQuery, Expr
-from opensearchorm.aggs import Aggregation, Sum, Cardinality
+from opensearchorm.aggs import Aggregation, Sum, Cardinality, Terms
 from opensearchorm.utils import parse_aggregations
 
 Host = Union[str, dict]
@@ -163,3 +163,6 @@ class QueryExecutor:
             **kwargs,
         )
         return resp['count']
+
+    def group_by(self, field: str, max_buckets: int = 100):
+        return self.aggregate(Terms(field, max_buckets))
