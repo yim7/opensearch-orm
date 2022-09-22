@@ -1,7 +1,7 @@
 import abc
 from enum import Enum
 import logging
-from typing import List, Optional, Type, TypeVar, Union
+from typing import List, Type, TypeVar, Union
 
 from opensearchorm.model import BaseModel
 
@@ -123,27 +123,34 @@ class ModelQuery(Expr):
             }
         }
 
+    @property
+    def valid_fields(self):
+        # todo @functools.cached_property, not supported in python3.7
+        return set(self.__model_cls.default_fields())
+
+    def check_valid_field(self, field: str):
+        assert field in self.valid_fields, f'check field name: {field}'
+
     def parse_clause(self, raw_field: str, value) -> Expr:
         field = raw_field
         for op in Operator:
             suffix: str = op.value
             if raw_field.endswith(suffix):
-                field = raw_field.removesuffix(suffix)
+                field, _ = raw_field.rsplit(suffix)
+                self.check_valid_field(field)
                 logging.debug('parse field: %s, raw: %s', field, raw_field)
+
                 if op == Operator.CONTAINS:
                     return Contains(field, value)
-                elif op == Operator.PREFIX:
+                if op == Operator.PREFIX:
                     return Prefix(field, value)
-                elif op == Operator.REGEXP:
+                if op == Operator.REGEXP:
                     return RegExp(field, value)
-                elif op in (Operator.GTE, Operator.GT, Operator.LTE, Operator.LT):
+                if op in (Operator.GTE, Operator.GT, Operator.LTE, Operator.LT):
                     op = suffix.lstrip('_')
                     return Range(field, value, op)
 
-        model = self.__model_cls
-        valid_fields = set(model.default_fields())
-        assert field in valid_fields, f'check field name: {field}'
-
+        self.check_valid_field(field)
         return MatchPhrase(field, value)
 
     def parse_clauses(self, **kwargs):

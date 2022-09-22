@@ -6,7 +6,7 @@ from opensearchpy import OpenSearch
 
 from opensearchorm.model import BaseModel
 from opensearchorm.query import ModelQuery, Expr
-from opensearchorm.aggs import *
+from opensearchorm.aggs import Aggregation, Sum, Cardinality
 
 Model = TypeVar('Model', bound=BaseModel)
 
