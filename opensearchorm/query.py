@@ -119,6 +119,7 @@ class ModelQuery(Expr):
                 'must_not': [e.compile() for e in self.__exclude],
                 'should': [e.compile() for e in self.__union],
                 'filter': [e.compile() for e in self.__filter],
+                'minimum_should_match': 1 if self.__union else 0,
             }
         }
 
