@@ -67,7 +67,7 @@ with SearchSession() as session:
 
 ## exclude
 ``` python
-{'bool': {'must_not': [{'match_phrase': {'method': 'get'}}, {'match_phrase': {'path': '/login'}}], 'should': [], 'filter': []}}
+# {'bool': {'must_not': [{'match_phrase': {'method': 'get'}}, {'match_phrase': {'path': '/login'}}], 'should': [], 'filter': []}}
 with SearchSession() as session:
     result = (
         session.select(UserLog)
@@ -92,12 +92,15 @@ with SearchSession() as session:
 ```
 
 ## aggregations
-group by path and count unique remote_ip
+group by path and count unique remote_ip.
+
 ``` python
 with SearchSession() as session:
+    # aggregate text must need use a keyword field instead
+    # request_timeout argument will be passed on to the opensearch-py
     result = (
         session.select(UserLog)
-        .aggregate(Terms('path').nested(Cardinality('remote_ip')))
+        .aggregate(Terms('path.keyword').nested(Cardinality('remote_ip,keyword')), request_timeout=300)
     )
     print(result)
     # result -> {'path': 1, 'path2': 2}

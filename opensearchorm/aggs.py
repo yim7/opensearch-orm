@@ -3,8 +3,8 @@ from typing import Optional
 
 
 class Aggregation(abc.ABC):
-    def __init__(self, field: str, is_text: bool = False) -> None:
-        self.field = f'{field}.keyword' if is_text else field
+    def __init__(self, field: str) -> None:
+        self.field = field
 
     @abc.abstractmethod
     def compile(self, depth: int = 1):
@@ -22,8 +22,8 @@ class BucketAggregation(Aggregation):
 
 
 class Terms(BucketAggregation):
-    def __init__(self, field: str, is_text: bool = False, max_buckets: int = 100) -> None:
-        super().__init__(field, is_text)
+    def __init__(self, field: str, max_buckets: int = 100) -> None:
+        super().__init__(field)
         self.max_buckets = max_buckets
         self.child: Optional[Aggregation] = None
 
