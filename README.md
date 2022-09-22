@@ -96,7 +96,7 @@ group by path and count unique remote_ip.
 
 ``` python
 with SearchSession() as session:
-    # aggregate text must need use a keyword field instead
+    # aggregate text field need use a keyword field instead
     # request_timeout argument will be passed on to the opensearch-py
     result = (
         session.select(UserLog)
