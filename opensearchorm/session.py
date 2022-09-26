@@ -113,7 +113,7 @@ class QueryExecutor(Generic[Model]):
         """
         model = self.__model_cls
         hits = self.fetch_fields(model.default_fields())
-        return [model.parse_obj(hit['_source']) for hit in hits]
+        return [model.parse_obj(hit) for hit in hits]
 
     def scroll(self, **kwargs):
         ...
