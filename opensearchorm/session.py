@@ -55,7 +55,6 @@ class QueryExecutor(Generic[Model]):
     def __init__(self, model_cls: Type[Model], session: SearchSession):
         self.__query = ModelQuery(model_cls)
         self.__model_cls = model_cls
-        self.__include_fields = []
         self.__limit: Optional[int] = None
         self.__offset: Optional[int] = None
         self.__session = session
@@ -80,12 +79,10 @@ class QueryExecutor(Generic[Model]):
         self.__offset = offset
         return self
 
-    def values(self, fields: List[str]):
-        self.__include_fields = fields
-        return self
-
-    def fetch(self, **kwargs):
+    def fetch_fields(self, fields: List[str], **kwargs):
         """
+        :arg fields: include source fields
+
         :arg kwargs: any additional arguments will be passed on to the opensearch-py call
         """
 
@@ -102,16 +99,21 @@ class QueryExecutor(Generic[Model]):
             index=model.__index__,
             size=self.__limit,
             from_=self.__offset,
-            _source_includes=self.__include_fields or model.default_fields(),
+            _source_includes=fields,
             **kwargs,
         )
 
         hits = resp['hits']['hits']
         logging.debug('raw result: %s', hits)
-        if self.__include_fields:
-            return [hit['_source'] for hit in hits]
-        else:
-            return [model.parse_obj(hit['_source']) for hit in hits]
+        return [hit['_source'] for hit in hits]
+
+    def fetch(self, **kwargs):
+        """
+        :arg kwargs: any additional arguments will be passed on to the opensearch-py call
+        """
+        model = self.__model_cls
+        hits = self.fetch_fields(model.default_fields())
+        return [model.parse_obj(hit['_source']) for hit in hits]
 
     def scroll(self, **kwargs):
         ...
