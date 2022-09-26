@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import List, Union, Optional, Type, TypeVar, cast
+from typing import Generic, List, Union, Optional, Type, TypeVar, cast
 
 from opensearchpy import OpenSearch
 
@@ -51,7 +51,7 @@ class SearchSession:
         return self.client.count(**kwargs)
 
 
-class QueryExecutor:
+class QueryExecutor(Generic[Model]):
     def __init__(self, model_cls: Type[Model], session: SearchSession):
         self.__query = ModelQuery(model_cls)
         self.__model_cls = model_cls
