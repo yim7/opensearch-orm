@@ -122,7 +122,7 @@ class Operator(Enum):
 
 
 OPERATOR_FUNCTIONS: Dict[Operator, Callable[[str, Any], Expr]] = {
-    Operator.CONTAINS: lambda field, value: Contains(field, [value]),
+    Operator.CONTAINS: lambda field, value: Contains(field, value if isinstance(value, list) else [value]),
     Operator.PREFIX: lambda field, value: MatchPhrasePrefix(field, value),
     Operator.REGEXP: lambda field, value: RegExp(field, value),
     Operator.GTE: lambda field, value: Range(field, (value, None)),
