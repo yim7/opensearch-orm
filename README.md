@@ -63,6 +63,14 @@ with SearchSession() as session:
         .filter(Contains('method', ['GET', 'POST']))
         .fetch()
     )
+
+    # single value
+    result = (
+        session.select(UserLog)
+        .filter(method__contains='GET')
+        .fetch()
+    )
+    print(result)
 ```
 
 ## exclude
@@ -104,4 +112,23 @@ with SearchSession() as session:
     )
     print(result)
     # result -> {'path': 1, 'path2': 2}
+```
+
+## scroll
+```
+with SearchSession() as session:
+    start = datetime(2023, 4, 15, 19, tzinfo=TZ)
+    end = datetime(2023, 4, 15, 21, tzinfo=TZ)
+
+    scroll = (
+        session.select(Model)
+        .filter(
+            created__gte=start,
+            created__lte=end,
+        )
+        .limit(10000)
+        .scroll('1m')
+    )
+    for records in scroll:
+        print('-------scroll', len(records))
 ```
