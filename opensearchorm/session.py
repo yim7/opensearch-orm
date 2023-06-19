@@ -87,13 +87,14 @@ class QueryExecutor(Generic[Model]):
         self.__offset = offset
         return self
 
-    def sort_by(self, *fields: str):
+    def order_by(self, *fields: str):
         sort = []
         for field in fields:
             order = 'desc' if field.startswith('-') else 'asc'
             field = field.strip('+-')
             sort.append({field: order})
         self.__sort = sort
+        return self
 
     def _search(self, fields: List[str], **kwargs):
         """
