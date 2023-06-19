@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "opensearch-orm"
-version = "0.1.9"
+version = "0.2.0"
 description = ""
 authors = ["yim7 <yimchiu7@gmail.com>"]
 readme = "README.md"
