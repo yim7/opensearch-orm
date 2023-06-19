@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "opensearch-orm"
-version = "0.1.7"
+version = "0.1.8"
 description = ""
 authors = ["yim7 <yimchiu7@gmail.com>"]
 readme = "README.md"
@@ -10,7 +10,7 @@ packages = [{include = "opensearchorm"}]
 python = "^3.7"
 opensearch-py = "^2.0.0"
 pytz = "^2022.2.1"
-pydantic = "^1.10.2"
+pydantic = "^1.10.0"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -64,6 +64,7 @@ class QueryExecutor(Generic[Model]):
         self.__model_cls = model_cls
         self.__limit: Optional[int] = None
         self.__offset: Optional[int] = None
+        self.__sort: list = []
         self.__session = session
 
     def filter(self, *args: Expr, **kwargs):
@@ -86,6 +87,14 @@ class QueryExecutor(Generic[Model]):
         self.__offset = offset
         return self
 
+    def sort_by(self, *fields: str):
+        sort = []
+        for field in fields:
+            order = 'desc' if field.startswith('-') else 'asc'
+            field = field.strip('+-')
+            sort.append({field: order})
+        self.__sort = sort
+
     def _search(self, fields: List[str], **kwargs):
         """
         :arg fields: include source fields
@@ -95,6 +104,7 @@ class QueryExecutor(Generic[Model]):
 
         body = {
             'query': self.__query.compile(),
+            'sort': self.__sort,
         }
         logging.debug('query:\n%s', json.dumps(body))
 
